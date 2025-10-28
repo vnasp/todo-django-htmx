@@ -2,16 +2,40 @@
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Todo App - Django HTMX</title>
+    <meta name="author" content="Valentina Muñoz" />
+    <meta name="csrf-token" content="{{ csrf_token }}" />
+    <title>Lista de Tareas | Django - HTMX - TailwindCSS</title>
+    {% load static %}
     <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    <script src="https://unpkg.com/htmx.org@1.9.10/dist/ext/class-tools.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}" />
   </head>
+
   <body>
-    <div class="container">
-      <h1>Lista de Tareas</h1>
-      <div id="task-list">
-        <p>Listado de tareas en columnas</p>
-      </div>
+    <div class="max-w-6xl mx-auto">
+      <header class="flex flex-row items-center justify-between w-full mb-8">
+        <h1 class="text-4xl">Lista de Tareas</h1>
+        <div class="flex gap-3">
+          <button class="btn bg-secondary text-white flex items-center">
+            <i data-lucide="list" class="w-4 h-4"></i>
+            Tareas
+          </button>
+        </div>
+      </header>
+
+      <main id="main-content">
+        <div id="columns-board" class="w-full">{% include 'tasks.html' %}</div>
+      </main>
     </div>
+
+    <script>
+      lucide.createIcons();
+
+      document.body.addEventListener("htmx:afterSwap", function () {
+        lucide.createIcons();
+      });
+    </script>
   </body>
 </html>

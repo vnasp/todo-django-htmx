@@ -1,0 +1,51 @@
+<!-- prettier-ignore -->
+<div
+  class="bg-gray-50 rounded-lg p-4 border-l-4 {% if column_type == 'pending' %}border-yellow-500{% elif column_type == 'completed' %}border-green-500{% else %}border-red-500{% endif %} hover:shadow-lg transition-shadow"
+  id="task-card-{{ task.id }}"
+>
+  <div class="space-y-2">
+    <div class="flex flex-row items-start gap-3 justify-between w-full">
+      {% if column_type != 'deleted' %}
+      <input
+        type="checkbox"
+        {% if task.completed %}checked{% endif %}
+
+        class="task-toggle w-5 h-5 cursor-pointer flex-shrink-0"
+      />
+      {% endif %}
+      <div class="flex-1">
+        <h3
+          class="font-semibold {% if task.completed %}line-through text-gray-500{% endif %}"
+        >
+          {{ task.title }}
+        </h3>
+        {% if task.description %}
+        <p class="text-sm mt-1">{{ task.description }}</p>
+        {% endif %}
+      </div>
+      <div class="flex gap-2 flex-shrink-0">
+        {% if column_type == 'pending' or column_type == 'completed' %}
+        <button
+          class="btn p-0"
+          aria-label="Actualizar tarea"
+          title="Actualizar"
+        >
+          <i data-lucide="edit-2" class="w-4 h-4"></i>
+        </button>
+        <button
+          class="btn p-0"
+        >
+          <i data-lucide="trash" class="w-4 h-4"></i>
+        </button>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="text-xs text-gray-500 space-x-2 flex items-center gap-2">
+      <span class="flex items-center gap-1"><i data-lucide="calendar" class="w-4 h-4"></i>{{ task.created_at|date:"d M Y H:i" }}</span>
+      {% if task.updated_at|date:"U" != task.created_at|date:"U" %}
+      <span class="flex items-center gap-1"><i data-lucide="history" class="w-4 h-4"></i>{{ task.updated_at|date:"d M Y H:i" }}</span>
+      {% endif %}
+    </div>
+  </div>
+</div>
