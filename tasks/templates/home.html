@@ -13,12 +13,17 @@
     <link rel="stylesheet" href="{% static 'css/styles.css' %}" />
   </head>
 
-  <body>
+  <body hx-ext="class-tools">
     <div class="max-w-6xl mx-auto">
       <header class="flex flex-row items-center justify-between w-full mb-8">
         <h1 class="text-4xl">Lista de Tareas</h1>
         <div class="flex gap-3">
-          <button class="btn bg-secondary text-white flex items-center">
+          <button
+            hx-get="/"
+            hx-target="#main-content"
+            hx-swap="innerHTML"
+            class="btn bg-secondary text-white flex items-center"
+          >
             <i data-lucide="list" class="w-4 h-4"></i>
             Tareas
           </button>
@@ -32,6 +37,10 @@
 
     <script>
       lucide.createIcons();
+
+      document.body.addEventListener("htmx:configRequest", (event) => {
+        event.detail.headers["X-CSRFToken"] = "{{ csrf_token }}";
+      });
 
       document.body.addEventListener("htmx:afterSwap", function () {
         lucide.createIcons();

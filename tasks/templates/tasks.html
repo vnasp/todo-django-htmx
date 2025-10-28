@@ -1,9 +1,18 @@
 <div class="flex flex-col gap-6 w-full">
   <div class="flex flex-col items-end w-full">
-    <button class="btn bg-primary text-white">+ Agregar nueva tarea</button>
+    <button
+      hx-on:click="htmx.toggleClass(htmx.find('#add-task-form'), 'hidden')"
+      class="btn bg-primary text-white"
+    >
+      + Agregar nueva tarea
+    </button>
     <div class="mb-6 w-1/2 ms-auto">
       <form
         id="add-task-form"
+        hx-post="{% url 'add_task' %}"
+        hx-target="#columns-board"
+        hx-swap="innerHTML"
+        hx-on::after-request="this.reset(); this.classList.add('hidden');"
         class="mt-4 space-y-4 hidden bg-gray-50 p-6 rounded-lg shadow-sm shadow-gray-500"
       >
         {% csrf_token %}
@@ -31,7 +40,11 @@
           >
             Guardar
           </button>
-          <button type="button" class="flex-1 btn bg-secondary text-white">
+          <button
+            type="button"
+            hx-on:click="htmx.addClass(htmx.find('#add-task-form'), 'hidden')"
+            class="flex-1 btn bg-secondary text-white"
+          >
             Cancelar
           </button>
         </div>

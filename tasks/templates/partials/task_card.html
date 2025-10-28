@@ -9,7 +9,10 @@
       <input
         type="checkbox"
         {% if task.completed %}checked{% endif %}
-
+        hx-post="{% url 'toggle_task' task.id %}"
+        hx-target="#columns-board"
+        hx-swap="innerHTML"
+        hx-trigger="change"
         class="task-toggle w-5 h-5 cursor-pointer flex-shrink-0"
       />
       {% endif %}
@@ -26,6 +29,9 @@
       <div class="flex gap-2 flex-shrink-0">
         {% if column_type == 'pending' or column_type == 'completed' %}
         <button
+          hx-get="{% url 'edit_task' task.id %}"
+          hx-target="#task-card-{{ task.id }}"
+          hx-swap="outerHTML"
           class="btn p-0"
           aria-label="Actualizar tarea"
           title="Actualizar"
@@ -33,6 +39,10 @@
           <i data-lucide="edit-2" class="w-4 h-4"></i>
         </button>
         <button
+          hx-delete="{% url 'delete_task' task.id %}"
+          hx-target="#columns-board"
+          hx-swap="innerHTML"
+          hx-confirm="¿Mover a eliminadas?"
           class="btn p-0"
         >
           <i data-lucide="trash" class="w-4 h-4"></i>
