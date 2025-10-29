@@ -9,7 +9,7 @@
     <div class="mb-6 w-1/2 ms-auto">
       <form
         id="add-task-form"
-        hx-post="{% url 'add_task' %}"
+        hx-post="{% url 'api_create_task' %}"
         hx-target="#columns-board"
         hx-swap="innerHTML"
         hx-on::after-request="this.reset(); this.classList.add('hidden');"

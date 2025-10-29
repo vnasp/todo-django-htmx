@@ -9,7 +9,7 @@
       <input
         type="checkbox"
         {% if task.completed %}checked{% endif %}
-        hx-post="{% url 'toggle_task' task.id %}"
+        hx-post="{% url 'api_toggle_task' task.id %}"
         hx-target="#columns-board"
         hx-swap="innerHTML"
         hx-trigger="change"
@@ -39,7 +39,7 @@
           <i data-lucide="edit-2" class="w-4 h-4"></i>
         </button>
         <button
-          hx-delete="{% url 'delete_task' task.id %}"
+          hx-delete="{% url 'api_delete_task' task.id %}"
           hx-target="#columns-board"
           hx-swap="innerHTML"
           hx-confirm="¿Mover a eliminadas?"
