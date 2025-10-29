@@ -1,0 +1,49 @@
+<div class="space-y-8">
+  <section class="text-center mb-8">
+    <h2 class="text-3xl">Estadísticas</h2>
+  </section>
+
+  <section id="stats">
+    <div class="grid grid-cols-1 md:grid-cols-5 gap-6 mb-8 animate-fadeIn">
+      <div class="bg-yellow-50 border-l-4 border-yellow-500 p-6 rounded-lg">
+        <p class="text-black text-sm font-semibold mb-2">Pendientes</p>
+        <p class="text-4xl font-bold">{{ pending_tasks }}</p>
+      </div>
+
+      <div class="bg-green-50 border-l-4 border-green-500 p-6 rounded-lg">
+        <p class="text-black text-sm font-semibold mb-2">Completadas</p>
+        <p class="text-4xl font-bold">{{ completed_tasks }}</p>
+      </div>
+
+      <div class="bg-red-50 border-l-4 border-red-500 p-6 rounded-lg">
+        <p class="text-black text-sm font-semibold mb-2">Eliminadas</p>
+        <p class="text-4xl font-bold">{{ deleted_tasks }}</p>
+      </div>
+
+      <div class="bg-gray-100 border-l-4 border-gray-500 p-6 rounded-lg">
+        <p class="text-black text-sm font-semibold mb-2">Total de Tareas</p>
+        <p class="text-4xl font-bold">{{ total_tasks }}</p>
+      </div>
+
+      <div class="bg-gray-100 border-l-4 border-gray-500 p-6 rounded-lg">
+        <p class="text-black text-sm font-semibold mb-2">% Completado</p>
+        <p class="text-4xl font-bold">{{ completion_rate }}%</p>
+        <p class="text-xs text-gray-600 mt-1">
+          {{ completed_tasks }}/{{ active_tasks }} activas
+        </p>
+      </div>
+    </div>
+
+    <section id="charts" class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div class="bg-white border border-gray-500 rounded-lg p-6 shadow-md">
+        <h3 class="text-xl font-bold mb-4">Distribución de Tareas</h3>
+        {{ script_pie|safe }} {{ div_pie|safe }}
+      </div>
+
+      <div class="bg-white border border-gray-500 rounded-lg p-6 shadow-md">
+        <h3 class="text-xl font-bold mb-4">Estado de las Tareas</h3>
+        {{ script_bar|safe }} {{ div_bar|safe }}
+      </div>
+    </section>
+  </section>
+</div>

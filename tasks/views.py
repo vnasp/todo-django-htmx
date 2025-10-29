@@ -3,9 +3,12 @@ from django.views import View
 from django.shortcuts import render, get_object_or_404
 from django.views.decorators.http import require_http_methods
 from django.utils.decorators import method_decorator
-
+from bokeh.plotting import figure
+from bokeh.embed import components
+import math
 import requests
-
+import json
+from django.conf import settings
 from .models import Task
 
 class HomeClass(TemplateView):
@@ -186,3 +189,109 @@ class APIDeleteTaskView(View):
     def post(self, request, task_id):
         return self.delete(request, task_id)
 
+
+class DashboardView(TemplateView):
+
+    def get_template_names(self):
+        if self.request.htmx:
+            return ["partials/dashboard_content.html"]
+        return [self.template_name]
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        
+        # Estadísticas generales
+        total_tasks = Task.objects.count()
+        pending_tasks = Task.objects.filter(completed=False, deleted=False).count()
+        completed_tasks = Task.objects.filter(completed=True, deleted=False).count()
+        deleted_tasks = Task.objects.filter(deleted=True).count()
+        
+        # Calcular porcentaje de completado respecto a tareas activas (sin eliminadas)
+        active_tasks = pending_tasks + completed_tasks
+        completion_rate = (completed_tasks / active_tasks * 100) if active_tasks > 0 else 0
+        
+        context.update({
+            'total_tasks': total_tasks,
+            'active_tasks': active_tasks,
+            'pending_tasks': pending_tasks,
+            'completed_tasks': completed_tasks,
+            'deleted_tasks': deleted_tasks,
+            'completion_rate': round(completion_rate, 1),
+        })
+        
+        # Gráfico tipo pie
+        if total_tasks > 0:
+            data = {
+                'status': ['Pendientes', 'Completadas', 'Eliminadas'],
+                'count': [pending_tasks, completed_tasks, deleted_tasks],
+                'color': ['#EAB308', '#22C55E', '#EF4444']
+            }
+            
+            angles = []
+            for count in data['count']:
+                angle = (count / total_tasks) * 2 * math.pi
+                angles.append(angle)
+            
+            pie_chart = figure(
+                width=500,
+                height=400,
+                title="Distribución de Tareas por Estado",
+                toolbar_location=None,
+                tools="hover",
+                tooltips="@status: @count",
+                x_range=(-0.5, 1.0)
+            )
+            
+            start_angle = 0
+            for i, (status, count, color, angle) in enumerate(zip(data['status'], data['count'], data['color'], angles)):
+                if count > 0:
+                    pie_chart.wedge(
+                        x=0, y=1,
+                        radius=0.4,
+                        start_angle=start_angle,
+                        end_angle=start_angle + angle,
+                        color=color,
+                        alpha=0.8,
+                        legend_label=f"{status}: {count}"
+                    )
+                    start_angle += angle
+            
+            pie_chart.axis.axis_label = None
+            pie_chart.axis.visible = False
+            pie_chart.grid.grid_line_color = None
+            pie_chart.legend.location = "top_right"
+            
+            script_pie, div_pie = components(pie_chart)
+            context['script_pie'] = script_pie
+            context['div_pie'] = div_pie
+        else:
+            context['script_pie'] = ''
+            context['div_pie'] = '<p class="text-center text-gray-500">No hay datos para mostrar</p>'
+        
+        # Gráfico de barras
+        bar_chart = figure(
+            x_range=['Pendientes', 'Completadas', 'Eliminadas'],
+            width=500,
+            height=400,
+            title="Comparación de Tareas por Estado",
+            toolbar_location=None,
+            tools=""
+        )
+        
+        bar_chart.vbar(
+            x=['Pendientes', 'Completadas', 'Eliminadas'],
+            top=[pending_tasks, completed_tasks, deleted_tasks],
+            width=0.6,
+            color=['#EAB308', '#22C55E', '#EF4444'],
+            alpha=0.8
+        )
+        
+        bar_chart.xgrid.grid_line_color = None
+        bar_chart.y_range.start = 0
+        bar_chart.yaxis.axis_label = "Cantidad de Tareas"
+        
+        script_bar, div_bar = components(bar_chart)
+        context['script_bar'] = script_bar
+        context['div_bar'] = div_bar
+        
+        return context

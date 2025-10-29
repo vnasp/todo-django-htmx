@@ -4,19 +4,25 @@
     <meta charset="UTF-8" />
     <meta name="author" content="Valentina Muñoz" />
     <meta name="csrf-token" content="{{ csrf_token }}" />
-    <title>Lista de Tareas | Django - HTMX - TailwindCSS</title>
+    <title>Gestor de Tareas | Django - HTMX - TailwindCSS - Bokeh</title>
     {% load static %}
     <script src="https://unpkg.com/htmx.org@1.9.10"></script>
     <script src="https://unpkg.com/htmx.org@1.9.10/dist/ext/class-tools.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
+    <link
+      href="https://cdn.bokeh.org/bokeh/release/bokeh-3.3.0.min.css"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <script src="https://cdn.bokeh.org/bokeh/release/bokeh-3.3.0.min.js"></script>
     <link rel="stylesheet" href="{% static 'css/styles.css' %}" />
   </head>
 
   <body hx-ext="class-tools">
     <div class="max-w-6xl mx-auto">
       <header class="flex flex-row items-center justify-between w-full mb-8">
-        <h1 class="text-4xl">Lista de Tareas</h1>
+        <h1 class="text-4xl">Gestor de Tareas</h1>
         <div class="flex gap-3">
           <button
             hx-get="/"
@@ -26,6 +32,15 @@
           >
             <i data-lucide="list" class="w-4 h-4"></i>
             Tareas
+          </button>
+          <button
+            hx-get="{% url 'dashboard' %}"
+            hx-target="#main-content"
+            hx-swap="innerHTML"
+            class="btn bg-secondary text-white flex items-center"
+          >
+            <i data-lucide="bar-chart-2" class="w-4 h-4"></i>
+            Dashboard
           </button>
         </div>
       </header>
