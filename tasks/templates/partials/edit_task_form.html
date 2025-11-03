@@ -4,8 +4,8 @@
 >
   <form
     hx-post="{% url 'api_update_task' task.id %}"
-    hx-target="#columns-board"
-    hx-swap="innerHTML"
+    hx-target="#tasks-container"
+    hx-swap="outerHTML"
     class="space-y-3"
   >
     {% csrf_token %}
@@ -36,9 +36,9 @@
       <button
         type="button"
         hx-get="/"
-        hx-target="#columns-board"
-        hx-swap="innerHTML"
-        hx-select="#columns-board"
+        hx-target="#tasks-container"
+        hx-swap="outerHTML"
+        hx-select="#tasks-container"
         class="flex-1 btn bg-secondary text-white"
       >
         Cancelar

@@ -10,8 +10,8 @@
         type="checkbox"
         {% if task.completed %}checked{% endif %}
         hx-post="{% url 'api_toggle_task' task.id %}"
-        hx-target="#columns-board"
-        hx-swap="innerHTML"
+        hx-target="#tasks-container"
+        hx-swap="outerHTML"
         hx-trigger="change"
         class="task-toggle w-5 h-5 cursor-pointer flex-shrink-0"
       />
@@ -40,8 +40,8 @@
         </button>
         <button
           hx-delete="{% url 'api_delete_task' task.id %}"
-          hx-target="#columns-board"
-          hx-swap="innerHTML"
+          hx-target="#tasks-container"
+          hx-swap="outerHTML"
           hx-confirm="¿Mover a eliminadas?"
           class="btn p-0"
         >

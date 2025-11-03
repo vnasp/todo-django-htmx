@@ -36,7 +36,7 @@ class TaskViewSet(mixins.ListModelMixin,
             'completed_tasks': completed_tasks,
             'deleted_tasks': deleted_tasks,
         }
-        html = render_to_string('partials/all_columns.html', context)
+        html = render_to_string('partials/tasks_container.html', context)
         return HttpResponse(html, content_type='text/html')
     
     def create(self, request, *args, **kwargs):

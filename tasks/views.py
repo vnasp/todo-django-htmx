@@ -57,9 +57,9 @@ class APIToggleTaskView(View):
         except Exception as e:
             print(f"Error al alternar tarea: {e}")
         
-        # Devolver las columnas actualizadas
+        # Devolver el contenedor completo de tareas
         context = get_tasks_context()
-        return render(request, 'partials/all_columns.html', context)
+        return render(request, 'partials/tasks_container.html', context)
 
 
 @method_decorator(require_http_methods(["POST"]), name='dispatch')
@@ -79,9 +79,9 @@ class APICreateTaskView(View):
             except Exception as e:
                 print(f"Error al crear tarea: {e}")
         
-        # Devolver las columnas actualizadas
+        # Devolver el contenedor completo de tareas
         context = get_tasks_context()
-        return render(request, 'partials/all_columns.html', context)
+        return render(request, 'partials/tasks_container.html', context)
 
 
 @method_decorator(require_http_methods(["PUT", "POST"]), name='dispatch')
@@ -107,9 +107,9 @@ class APIUpdateTaskView(View):
             except Exception as e:
                 print(f"Error al actualizar tarea: {e}")
         
-        # Devolver las columnas actualizadas
+        # Devolver el contenedor completo de tareas
         context = get_tasks_context()
-        return render(request, 'partials/all_columns.html', context)
+        return render(request, 'partials/tasks_container.html', context)
 
 
 @method_decorator(require_http_methods(["DELETE", "POST"]), name='dispatch')
@@ -124,9 +124,9 @@ class APIDeleteTaskView(View):
         except Exception as e:
             print(f"Error al eliminar tarea: {e}")
         
-        # Devolver las columnas actualizadas
+        # Devolver el contenedor completo de tareas
         context = get_tasks_context()
-        return render(request, 'partials/all_columns.html', context)
+        return render(request, 'partials/tasks_container.html', context)
     
     def post(self, request, task_id):
         return self.delete(request, task_id)
