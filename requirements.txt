@@ -3,3 +3,5 @@ django-htmx==1.17.2
 djangorestframework==3.14.0
 bokeh==3.3.0
 requests==2.31.0
+whitenoise==6.6.0
+gunicorn==21.2.0

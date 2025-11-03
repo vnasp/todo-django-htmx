@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: todo-django-htmx
+    runtime: python
+    buildCommand: "./build.sh"
+    startCommand: "gunicorn app.wsgi:application"
+    envVars:
+      - key: DEBUG
+        value: False
+      - key: SECRET_KEY
+        generateValue: true
+      - key: PYTHON_VERSION
+        value: 3.12.0
