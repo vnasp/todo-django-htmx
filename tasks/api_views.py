@@ -2,6 +2,7 @@ from rest_framework import viewsets, status, mixins
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from django.template.loader import render_to_string
+from django.http import HttpResponse
 from .models import Task
 from .serializers import TaskSerializer
 
@@ -36,7 +37,7 @@ class TaskViewSet(mixins.ListModelMixin,
             'deleted_tasks': deleted_tasks,
         }
         html = render_to_string('partials/all_columns.html', context)
-        return Response(html, content_type='text/html')
+        return HttpResponse(html, content_type='text/html')
     
     def create(self, request, *args, **kwargs):
         """POST - Crear tarea"""
