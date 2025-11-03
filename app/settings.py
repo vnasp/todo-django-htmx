@@ -155,9 +155,20 @@ REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': [
         'rest_framework.renderers.JSONRenderer',
     ],
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',
+    ],
 }
 
 # WhiteNoise configuration para producción
 WHITENOISE_USE_FINDERS = True
 WHITENOISE_AUTOREFRESH = True
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+# CSRF Configuration para HTMX
+CSRF_TRUSTED_ORIGINS = [
+    'https://todo-django-htmx.onrender.com',
+    'http://localhost:8000',
+    'http://127.0.0.1:8000',
+]
+CSRF_COOKIE_HTTPONLY = False  # Necesario para que HTMX pueda leer la cookie CSRF

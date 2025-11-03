@@ -3,7 +3,7 @@
   id="task-card-{{ task.id }}"
 >
   <form
-    hx-post="{% url 'api_update_task' task.id %}"
+    hx-put="{% url 'api_update_task' task.id %}"
     hx-target="#columns-board"
     hx-swap="innerHTML"
     class="space-y-3"
