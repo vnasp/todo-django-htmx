@@ -6,9 +6,6 @@ from django.utils.decorators import method_decorator
 from bokeh.plotting import figure
 from bokeh.embed import components
 import math
-import requests
-import json
-from django.conf import settings
 from .models import Task
 
 class HomeClass(TemplateView):
@@ -35,34 +32,6 @@ class EditTaskFormView(View):
         return render(request, 'partials/edit_task_form.html', {'task': task})
 
 
-# Método auxiliar para hacer peticiones a la API interna
-def call_internal_api(method, endpoint, data=None):
-    """
-    Realiza peticiones HTTP a la API REST interna.
-    
-    Args:
-        method: Método HTTP (GET, POST, PUT, DELETE)
-        endpoint: Endpoint de la API (ej: '/api/tasks/')
-        data: Datos a enviar (opcional)
-    
-    Returns:
-        Response object de requests
-    """
-    base_url = 'http://localhost:8000'
-    url = f'{base_url}{endpoint}'
-    
-    headers = {'Content-Type': 'application/json'}
-    
-    if method.upper() == 'GET':
-        return requests.get(url, headers=headers)
-    elif method.upper() == 'POST':
-        return requests.post(url, json=data, headers=headers)
-    elif method.upper() == 'PUT':
-        return requests.put(url, json=data, headers=headers)
-    elif method.upper() == 'DELETE':
-        return requests.delete(url, headers=headers)
-
-
 def get_tasks_context():
     """
     Obtiene el contexto de tareas organizadas por estado.
@@ -78,45 +47,37 @@ def get_tasks_context():
 # Vistas adaptadoras para conectar API REST con HTMX
 @method_decorator(require_http_methods(["POST"]), name='dispatch')
 class APIToggleTaskView(View):
-    """Vista adaptadora que usa la API REST y devuelve HTML para HTMX"""
+    """Vista para alternar el estado de completado de una tarea"""
     def post(self, request, task_id):
         try:
-            response = call_internal_api('POST', f'/api/tasks/{task_id}/toggle/')
-            
-            if response.status_code == 200:
-                # Devolver las columnas actualizadas
-                context = get_tasks_context()
-                return render(request, 'partials/all_columns.html', context)
-            else:
-                # Manejar error de la API
-                context = get_tasks_context()
-                return render(request, 'partials/all_columns.html', context)
+            # Alternar el estado directamente en la base de datos
+            task = get_object_or_404(Task, id=task_id)
+            task.completed = not task.completed
+            task.save()
         except Exception as e:
-            # Fallback en caso de error de conexión
-            print(f"Error al llamar a la API: {e}")
-            context = get_tasks_context()
-            return render(request, 'partials/all_columns.html', context)
+            print(f"Error al alternar tarea: {e}")
+        
+        # Devolver las columnas actualizadas
+        context = get_tasks_context()
+        return render(request, 'partials/all_columns.html', context)
 
 
 @method_decorator(require_http_methods(["POST"]), name='dispatch')
 class APICreateTaskView(View):
-    """Vista adaptadora que usa la API REST para crear tareas y devuelve HTML"""
+    """Vista para crear tareas y devuelve HTML"""
     def post(self, request):
         title = request.POST.get('title', '').strip()
         description = request.POST.get('description', '').strip()
         
         if title:
             try:
-                data = {
-                    'title': title,
-                    'description': description
-                }
-                response = call_internal_api('POST', '/api/tasks/', data)
-                
-                if response.status_code not in [200, 201]:
-                    print(f"Error al crear tarea: {response.status_code}")
+                # Crear directamente en la base de datos
+                Task.objects.create(
+                    title=title,
+                    description=description
+                )
             except Exception as e:
-                print(f"Error al llamar a la API: {e}")
+                print(f"Error al crear tarea: {e}")
         
         # Devolver las columnas actualizadas
         context = get_tasks_context()
@@ -125,7 +86,7 @@ class APICreateTaskView(View):
 
 @method_decorator(require_http_methods(["PUT", "POST"]), name='dispatch')
 class APIUpdateTaskView(View):
-    """Vista adaptadora que usa la API REST para actualizar tareas y devuelve HTML"""
+    """Vista para actualizar tareas y devuelve HTML"""
     def post(self, request, task_id):
         return self.update(request, task_id)
     
@@ -137,22 +98,14 @@ class APIUpdateTaskView(View):
         description = request.POST.get('description', '').strip()
         
         if title:
-            # Llamar a la API REST para actualizar
+            # Actualizar directamente en la base de datos
             try:
-                # Primero obtener la tarea actual para preservar otros campos
                 task = get_object_or_404(Task, id=task_id)
-                data = {
-                    'title': title,
-                    'description': description,
-                    'completed': task.completed,
-                    'deleted': task.deleted
-                }
-                response = call_internal_api('PUT', f'/api/tasks/{task_id}/', data)
-                
-                if response.status_code not in [200, 201]:
-                    print(f"Error al actualizar tarea: {response.status_code}")
+                task.title = title
+                task.description = description
+                task.save()
             except Exception as e:
-                print(f"Error al llamar a la API: {e}")
+                print(f"Error al actualizar tarea: {e}")
         
         # Devolver las columnas actualizadas
         context = get_tasks_context()
@@ -161,26 +114,15 @@ class APIUpdateTaskView(View):
 
 @method_decorator(require_http_methods(["DELETE", "POST"]), name='dispatch')
 class APIDeleteTaskView(View):
-    """Vista adaptadora que usa la API REST para soft-delete y devuelve HTML"""
+    """Vista para soft-delete de tareas"""
     def delete(self, request, task_id):
-        # Implementar soft-delete usando la API
+        # Implementar soft-delete
         try:
-            # Obtener la tarea actual
             task = get_object_or_404(Task, id=task_id)
-            
-            # Actualizar vía API marcando como deleted
-            data = {
-                'title': task.title,
-                'description': task.description,
-                'completed': task.completed,
-                'deleted': True  # Soft delete
-            }
-            response = call_internal_api('PUT', f'/api/tasks/{task_id}/', data)
-            
-            if response.status_code not in [200, 201]:
-                print(f"Error al eliminar tarea: {response.status_code}")
+            task.deleted = True
+            task.save()
         except Exception as e:
-            print(f"Error al llamar a la API: {e}")
+            print(f"Error al eliminar tarea: {e}")
         
         # Devolver las columnas actualizadas
         context = get_tasks_context()
