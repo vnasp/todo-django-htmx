@@ -43,7 +43,7 @@ npm run dev:css
 - **Backend**: Django 5.0, Django REST Framework 3.14
 - **Gráficos**: Bokeh 3.3.0
 - **Frontend**: HTMX 1.9.10 (CDN), Tailwind CSS 4.1.16 (instalado localmente)
-- **Base de datos**: SQLite
+- **Base de datos**: SQLite (dev) / PostgreSQL (deploy)
 - **Otros**: Docker, Python 3.12, Node.js
 
 ## Despliegue 🚀
