@@ -7,8 +7,7 @@ databases:
 services:
   - type: web
     name: todo-django-htmx
-    runtime: python
-    buildCommand: "./build.sh"
+    runtime: docker
     startCommand: "gunicorn app.wsgi:application"
     envVars:
       - key: DEBUG

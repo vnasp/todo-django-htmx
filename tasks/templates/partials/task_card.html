@@ -1,40 +1,39 @@
 <!-- prettier-ignore -->
 <div
-  class="bg-gray-50 rounded-lg p-4 border-l-4 {% if column_type == 'pending' %}border-yellow-500{% elif column_type == 'completed' %}border-green-500{% else %}border-red-500{% endif %} hover:shadow-lg transition-shadow"
+  class="card {% if column_type == 'pending' %}border-yellow-500{% elif column_type == 'completed' %}border-green-500{% else %}border-red-500{% endif %} "
   id="task-card-{{ task.id }}"
 >
   <div class="space-y-2">
-    <div class="flex flex-row items-start gap-3 justify-between w-full">
+    <div class="flex flex-row items-start gap-4 justify-between w-full">
       {% if column_type != 'deleted' %}
-      <input
-        type="checkbox"
-        {% if task.completed %}checked{% endif %}
-        hx-post="{% url 'api_toggle_task' task.id %}"
-        hx-target="#tasks-container"
-        hx-swap="outerHTML"
-        hx-trigger="change"
-        class="task-toggle w-5 h-5 cursor-pointer flex-shrink-0"
-      />
+      <div>
+        <input
+          type="checkbox"
+          {% if task.completed %}checked{% endif %}
+          hx-post="{% url 'api_toggle_task' task.id %}"
+          hx-target="#tasks-container"
+          hx-swap="outerHTML"
+          hx-trigger="change"
+          class="task-toggle w-4 h-4 cursor-pointer shrink-0"
+        />
+      </div>
       {% endif %}
       <div class="flex-1">
         <h3
-          class="font-semibold {% if task.completed %}line-through text-gray-500{% endif %}"
+          class="{% if task.completed %}line-through text-gray-500{% endif %}"
         >
           {{ task.title }}
         </h3>
-        {% if task.description %}
-        <p class="text-sm mt-1">{{ task.description }}</p>
-        {% endif %}
       </div>
-      <div class="flex gap-2 flex-shrink-0">
+      <div class="flex gap-4 shrink-0">
         {% if column_type == 'pending' or column_type == 'completed' %}
         <button
           hx-get="{% url 'edit_task' task.id %}"
           hx-target="#task-card-{{ task.id }}"
           hx-swap="outerHTML"
-          class="btn p-0"
           aria-label="Actualizar tarea"
           title="Actualizar"
+          class="hover:text-primary"
         >
           <i data-lucide="edit-2" class="w-4 h-4"></i>
         </button>
@@ -43,12 +42,17 @@
           hx-target="#tasks-container"
           hx-swap="outerHTML"
           hx-confirm="¿Mover a eliminadas?"
-          class="btn p-0"
+          class="hover:text-red-600"
+          aria-label="Eliminar tarea"
         >
           <i data-lucide="trash" class="w-4 h-4"></i>
         </button>
         {% endif %}
       </div>
+    </div>
+
+    <div class="text-sm">
+      {{ task.description }}
     </div>
 
     <div class="text-xs text-gray-500 space-x-2 flex items-center gap-2">

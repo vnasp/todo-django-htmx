@@ -1,0 +1,121 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap");
+
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #1fc1b1;
+  --color-secondary: #151515;
+  --color-dark: #151515;
+}
+
+html {
+  background-image: url("/static/img/bg.jpg");
+  background-size: cover;
+  background-position: top;
+  background-repeat: no-repeat;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+body {
+  font-family: "Roboto", sans-serif;
+  color: var(--dark);
+  min-height: 100vh;
+  padding: 1.5rem;
+  max-width: 75vw;
+  margin: 0 auto;
+}
+
+h1 {
+  @apply text-3xl font-extrabold uppercase;
+}
+
+h2 {
+  @apply text-xl font-bold;
+}
+
+h3 {
+  @apply font-medium;
+}
+
+.btn {
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
+  border-radius: 9999px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  text-align: center;
+  cursor: pointer;
+}
+.btn:hover {
+  @apply transform scale-105;
+}
+
+button {
+  @apply cursor-pointer;
+}
+
+.column {
+  @apply bg-slate-100 rounded-2xl shadow-md shadow-gray-500 p-6;
+}
+
+.column__header {
+  @apply flex items-center justify-between mb-4 pb-3 border-b border-dark;
+}
+
+.column__body {
+  @apply space-y-4 max-h-[600px] overflow-y-auto;
+}
+
+.column__body--empty {
+  @apply text-center text-gray-500 py-8;
+}
+
+.card {
+  @apply bg-white shadow-sm shadow-slate-300 rounded-lg p-4 border-l-5 hover:shadow-lg transition-shadow;
+}
+
+.stats__container {
+  @apply grid grid-cols-1 md:grid-cols-5 gap-6 mb-8;
+}
+
+.stats__card {
+  @apply border-l-4  p-6 rounded-lg shadow-sm;
+}
+
+.stats__card--title {
+  @apply text-black text-sm font-semibold mb-2;
+}
+
+.stats__card--count {
+  @apply text-4xl font-bold;
+}
+
+.stats__card--pending {
+  @apply bg-linear-to-br from-yellow-50 via-yellow-100 to-yellow-200 border-yellow-500;
+}
+
+.stats__card--completed {
+  @apply bg-linear-to-br from-green-50 via-green-100 to-green-200 border-green-500;
+}
+
+.stats__card--deleted {
+  @apply bg-linear-to-br from-red-50 via-red-100 to-red-200 border-red-500;
+}
+
+.stats__card--total {
+  @apply bg-linear-to-br from-gray-100 via-gray-200 to-gray-300 border-gray-500;
+}
+
+.charts {
+  @apply grid grid-cols-1 lg:grid-cols-2 gap-8;
+}
+
+.chart_container {
+  @apply bg-slate-50 rounded-lg p-6 shadow-md shadow-gray-500;
+}

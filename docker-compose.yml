@@ -10,3 +10,13 @@ services:
       - PYTHONUNBUFFERED=1
     stdin_open: true
     tty: true
+
+  # Tailwind watcher for local development
+  tailwind:
+    image: node:18
+    working_dir: /app
+    volumes:
+      - .:/app
+    command: sh -c "npm ci --no-audit --no-fund && npm run dev:css"
+    stdin_open: false
+    tty: false

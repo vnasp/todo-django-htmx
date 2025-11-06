@@ -8,7 +8,6 @@
     {% load static %}
     <script src="https://unpkg.com/htmx.org@1.9.10"></script>
     <script src="https://unpkg.com/htmx.org@1.9.10/dist/ext/class-tools.js"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <link
       href="https://cdn.bokeh.org/bokeh/release/bokeh-3.3.0.min.css"
@@ -16,13 +15,13 @@
       type="text/css"
     />
     <script src="https://cdn.bokeh.org/bokeh/release/bokeh-3.3.0.min.js"></script>
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/dist.css' %}" />
   </head>
 
   <body hx-ext="class-tools">
-    <div class="max-w-6xl mx-auto">
+    <div class="max-w-6xl mx-auto space-y-6">
       <header class="flex flex-row items-center justify-between w-full mb-8">
-        <h1 class="text-4xl">Gestor de Tareas</h1>
+        <h1>Gestor de Tareas</h1>
         <div class="flex gap-3">
           <button
             hx-get="/"
@@ -46,8 +45,35 @@
       </header>
 
       <main id="main-content">
-        <div id="columns-board" class="w-full">{% include 'tasks.html' %}</div>
+        <div id="columns-board" class="w-full">{% include 'partials/tasks_container.html' %}</div>
       </main>
+      <footer class="flex flex-row items-center justify-between text-white text-sm">
+        <p>
+          &copy; <span id="current-year"></span> Valentina Muñoz
+          <script>
+            (function () {
+              const el = document.getElementById("current-year");
+              if (el) el.textContent = new Date().getFullYear();
+            })();
+          </script>
+        </p>
+        <p>Sitio creado con Django, HTMX, TailwindCSS y Bokeh.</p>
+    </div>
+
+    <!-- Overlay de carga para peticiones HTMX -->
+    <div
+      id="htmx-loading"
+      class="fixed inset-0 bg-black bg-opacity-40 z-50 hidden"
+      aria-hidden="true"
+    >
+      <div
+        class="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white bg-opacity-95 px-4 py-3 rounded-md flex items-center gap-3 shadow"
+      >
+        <div
+          class="w-8 h-8 border-4 border-gray-200 border-t-secondary rounded-full animate-spin"
+        ></div>
+        <span class="text-gray-700">Cargando...</span>
+      </div>
     </div>
 
     <script>
@@ -63,8 +89,53 @@
         event.detail.headers["X-CSRFToken"] = csrftoken;
       });
 
+      // Helper para mostrar/ocultar el overlay de carga
+      const htmxLoading = (function () {
+        const id = "htmx-loading";
+        function el() {
+          return document.getElementById(id);
+        }
+        function show() {
+          const n = el();
+          if (n) n.classList.remove("hidden");
+        }
+        function hide() {
+          const n = el();
+          if (n) n.classList.add("hidden");
+        }
+        return { show, hide };
+      })();
+
+      // Mostrar overlay cuando HTMX envía una petición
+      document.body.addEventListener("htmx:send", function () {
+        htmxLoading.show();
+      });
+
+      // Ocultar overlay y recrear iconos después del swap
       document.body.addEventListener("htmx:afterSwap", function () {
         lucide.createIcons();
+        htmxLoading.hide();
+      });
+
+      // Asegurar que el overlay se oculte tras completar la petición o en errores
+      document.body.addEventListener("htmx:afterRequest", function () {
+        htmxLoading.hide();
+      });
+      document.body.addEventListener("htmx:responseError", function () {
+        htmxLoading.hide();
+      });
+
+      // Cerrar offcanvas con la tecla Escape (si está abierto)
+      document.addEventListener("keydown", function (e) {
+        if (e.key === "Escape") {
+          const off = document.getElementById("offcanvas");
+          const backdrop = document.getElementById("offcanvas-backdrop");
+          if (off && !off.classList.contains("translate-x-full")) {
+            off.classList.add("translate-x-full");
+            off.classList.remove("translate-x-0");
+            if (backdrop) backdrop.classList.add("hidden");
+          }
+        }
       });
     </script>
   </body>

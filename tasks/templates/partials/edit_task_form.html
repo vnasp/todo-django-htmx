@@ -1,7 +1,4 @@
-<div
-  class="bg-blue-50 rounded-lg p-4 border-l-4 border-blue-500"
-  id="task-card-{{ task.id }}"
->
+<div class="card border-primary" id="task-card-{{ task.id }}">
   <form
     hx-post="{% url 'api_update_task' task.id %}"
     hx-target="#tasks-container"
