@@ -9,7 +9,7 @@
     "tailwindcss": "^4.1.16"
   },
   "scripts": {
-    "build:css": "tailwindcss -i ./static/css/input.css -o ./static/css/dist.css --minify",
-    "dev:css": "tailwindcss -i ./static/css/input.css -o ./static/css/dist.css --watch"
+    "build:css": "tailwindcss -i ./src/input.css -o ./static/css/dist.css --minify",
+    "dev:css": "tailwindcss -i ./src/input.css -o ./static/css/dist.css --watch"
   }
 }

@@ -38,10 +38,16 @@ npm run dev:css
 - Dashboard estadístico con librería Bokeh
 - API Rest con Django REST Framework que permite realizar CRUD sobre las tareas.
 
-## Tecnologías utilizadas
+## Tecnologías utilizadas 💻
 
 - **Backend**: Django 5.0, Django REST Framework 3.14
 - **Gráficos**: Bokeh 3.3.0
 - **Frontend**: HTMX 1.9.10 (CDN), Tailwind CSS 4.1.16 (instalado localmente)
 - **Base de datos**: SQLite
 - **Otros**: Docker, Python 3.12, Node.js
+
+## Despliegue 🚀
+
+Revisa la aplicación desplegada en Render: https://todo-django-htmx.onrender.com
+
+Importante: El plan gratuito de Render demora unos segundos en levantar el despliegue.
